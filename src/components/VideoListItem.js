@@ -12,14 +12,15 @@ const VideoListItem = ({video, openPlayer}) => {
   } = video.snippet;
   return (
     <>
-      <View style={styles.containerStyle}>
-        <TouchableOpacity onPress={() => openPlayer(video.id.videoId)}>
+      <TouchableOpacity onPress={() => openPlayer(video.id.videoId)}>
+        <View style={styles.containerStyle}>
           <Image style={styles.ImageStyle} source={{uri: url}} />
-        </TouchableOpacity>
-        <View style={styles.InfoStyle}>
-          <Text style={styles.TextStyle}>{title}</Text>
+
+          <View style={styles.InfoStyle}>
+            <Text style={styles.TextStyle}>{title}</Text>
+          </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </>
   );
 };

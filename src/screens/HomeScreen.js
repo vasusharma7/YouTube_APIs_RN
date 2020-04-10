@@ -73,9 +73,7 @@ const HomeScreen = ({navigation}) => {
               addAndroidDownloads: {
                 useDownloadManager: true,
                 notification: true,
-                path: MovieDir,
-                title,
-                ext,
+                path: String(MovieDir) + '/' + String(title) + ext,
                 description: 'Video',
               },
             };
@@ -122,7 +120,10 @@ const HomeScreen = ({navigation}) => {
               },
             },
           ])}
-        <Header>YouTube Video Downloader</Header>
+        <Header>
+          You
+          <Text style={{color: '#ff0000'}}>Tube</Text> Video Downloader
+        </Header>
         <Logo />
         <Paragraph>Have The Video URL/Video Id ?</Paragraph>
         <TextInput

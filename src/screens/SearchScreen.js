@@ -71,6 +71,7 @@ export default class SearchScreen extends React.Component {
           }&key=${API_KEY}`,
         )
         .then(res => {
+          console.log(this.state.nowPlaying);
           if (res.data.pageInfo.totalResults) {
             var title = res.data.items['0'].snippet.title;
             var url = 'http://18.224.19.26:5000/api/utils/download';
@@ -82,9 +83,7 @@ export default class SearchScreen extends React.Component {
               addAndroidDownloads: {
                 useDownloadManager: true,
                 notification: true,
-                path: MovieDir,
-                title,
-                ext,
+                path: String(MovieDir) + '/' + String(title) + ext,
                 description: 'Video',
               },
             };
