@@ -1,5 +1,7 @@
-import React, {memo, useState} from 'react';
-import {Alert} from 'react-native';
+import React, {memo, useState, useEffect, Component} from 'react';
+import {Text, Alert, PermissionsAndroid, TouchableOpacity} from 'react-native';
+import Clipboard from '@react-native-community/clipboard';
+
 import Background from '../components/Background';
 import Logo from '../components/Logo';
 import Button from '../components/Button';
@@ -7,54 +9,127 @@ import Header from '../components/Header';
 import TextInput from '../components/TextInput';
 import Paragraph from '../components/Paragraph';
 import RNFetchBlob from 'rn-fetch-blob';
+import YTSearch from 'youtube-api-search';
+import axios from 'axios';
 // import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// var axios = require('axios');
+const API_KEY = 'AIzaSyBmxU0P0h6uQTANkaBKbmRdHjZZe4iRfXA';
+
 const HomeScreen = ({navigation}) => {
+  const [clip, setClip] = useState('');
   const [link, setLink] = useState({value: '', error: ''});
-  const download = () => {
-    var date = new Date();
-    var url = 'http://121e27e9.ngrok.io/api/utils/download';
-    var ext = '.mp4';
+  const [ask, setAsk] = useState(true);
+  async function clipF() {
+    const clipboardContent = await Clipboard.getString();
+    setClip(clipboardContent);
+  }
+  function validURL(str) {
+    var pattern = new RegExp(
+      '^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$',
+      'i',
+    ); // fragment locator
+    return !!pattern.test(str);
+  }
+  useEffect(() => {
+    clipF();
+    if (clip !== '') {
+      setAsk(true);
+    }
+  });
+  function youtube_parser(url) {
+    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
+    var match = url.match(regExp);
+    return match && match[7].length === 11 ? match[7] : url;
+  }
+
+  const download = async () => {
     const {config, fs} = RNFetchBlob;
     let MovieDir = fs.dirs.MovieDir;
-    let options = {
-      fileCache: true,
-      addAndroidDownloads: {
-        useDownloadManager: true,
-        notification: true,
-        path:
-          MovieDir +
-          '/ytVideo_' +
-          String(date.getHours()) +
-          '-' +
-          String(date.getMinutes()) +
-          '-' +
-          String(date.getSeconds()),
-        ext,
-        description: 'Video',
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      {
+        title: 'Storage Permission Required',
+        message: 'Videos will be saved to' + String(MovieDir),
       },
-    };
-    config(options)
-      .fetch('GET', url, {
-        query: link.value,
-      })
-      .then(res => {
-        console.log('Success Downloaded');
-      })
-      .catch(err => {
-        console.log(err);
-        Alert.alert('Video URL Invalid', 'Enter Proper Video URL');
-      });
-  };
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      var videoId = youtube_parser(link.value);
+      console.log(videoId);
+      await axios
+        .get(
+          `https://www.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`,
+        )
+        .then(res => {
+          if (res.data.pageInfo.totalResults) {
+            var title = res.data.items['0'].snippet.title;
+            var url = 'http://524cd993.ngrok.io/api/utils/download';
+            var ext = '.mp4';
 
+            Alert.alert(title, 'Video Will be saved in ' + String(MovieDir));
+            let options = {
+              fileCache: true,
+              addAndroidDownloads: {
+                useDownloadManager: true,
+                notification: true,
+                path: MovieDir,
+                title,
+                ext,
+                description: 'Video',
+              },
+            };
+            config(options)
+              .fetch('GET', url, {
+                query: link.value,
+              })
+              .then(res => {
+                console.log('Success Downloaded');
+              })
+              .catch(err => {
+                console.log(err);
+                Alert.alert('Could Not Download Video', 'Some Error Occured');
+              });
+          } else {
+            Alert.alert('No Video Found', 'Please Check URL');
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          Alert.alert('Some Error Occured', 'Please Try Again');
+        });
+    } else {
+      Alert.alert('Storage  Permission Denied', "Can't Save Videos");
+    }
+  };
   return (
     <>
       <Background>
+        {ask &&
+          validURL(clip) &&
+          Alert.alert('URL Detected  in Clipboard ', 'Do You Want to Paste', [
+            {
+              text: 'Confirm',
+              onPress: () => {
+                setLink(clip);
+                setAsk(false);
+              },
+            },
+            {
+              text: 'Cancel',
+              onPress: () => {
+                setAsk(false);
+              },
+            },
+          ])}
         <Header>YouTube Video Downloader</Header>
         <Logo />
-        <Paragraph>Have The Video Link ?</Paragraph>
+        <Paragraph>Have The Video URL/Video Id ?</Paragraph>
         <TextInput
           label="Enter URL Here"
+          theme={{colors: {primary: 'red'}}}
           returnKeyType="done"
           value={link.value}
           onChangeText={text => setLink({value: text, error: ''})}
@@ -64,6 +139,10 @@ const HomeScreen = ({navigation}) => {
         <Button onPress={download} mode="contained" style={{color: '#ff0000'}}>
           Download
         </Button>
+        <Paragraph>
+          Don't Have The Link/Id ? Head to{' '}
+          <Text style={{color: 'red'}}>Explore</Text>
+        </Paragraph>
       </Background>
     </>
   );
