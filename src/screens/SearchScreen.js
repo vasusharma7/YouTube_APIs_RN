@@ -43,7 +43,6 @@ export default class SearchScreen extends React.Component {
   searchYT = term => {
     this.setState({loading: true});
     YTSearch({key: API_KEY, term}, videos => {
-      //   console.log(videos);
       this.setState({loading: false, videos: videos});
     });
   };
@@ -74,7 +73,7 @@ export default class SearchScreen extends React.Component {
         .then(res => {
           if (res.data.pageInfo.totalResults) {
             var title = res.data.items['0'].snippet.title;
-            var url = 'http://524cd993.ngrok.io/api/utils/download';
+            var url = 'http://18.224.19.26:5000/api/utils/download';
             var ext = '.mp4';
 
             Alert.alert(title, 'Video Will be saved in ' + String(MovieDir));
@@ -126,10 +125,7 @@ export default class SearchScreen extends React.Component {
           if (this.state.containerWidth !== width)
             this.setState({containerWidth: width});
         }}>
-        <SearchBar
-          loading={this.state.loading}
-          onPressSearch={this.onPressSearch}
-        />
+        <SearchBar onPressSearch={this.onPressSearch} />
         {this.state.containerMounted && (
           <>
             <View style={styles.videoStyle}>
@@ -195,7 +191,11 @@ export default class SearchScreen extends React.Component {
           </>
         )}
 
-        <VideoList openPlayer={this.openPlayer} videos={this.state.videos} />
+        <VideoList
+          loading={this.state.loading}
+          openPlayer={this.openPlayer}
+          videos={this.state.videos}
+        />
       </ScrollView>
     );
   }

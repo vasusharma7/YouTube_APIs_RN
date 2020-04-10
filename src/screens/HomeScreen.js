@@ -32,13 +32,11 @@ const HomeScreen = ({navigation}) => {
         '(\\#[-a-z\\d_]*)?$',
       'i',
     ); // fragment locator
+
     return !!pattern.test(str);
   }
   useEffect(() => {
     clipF();
-    if (clip !== '') {
-      setAsk(true);
-    }
   });
   function youtube_parser(url) {
     var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
@@ -66,7 +64,7 @@ const HomeScreen = ({navigation}) => {
         .then(res => {
           if (res.data.pageInfo.totalResults) {
             var title = res.data.items['0'].snippet.title;
-            var url = 'http://524cd993.ngrok.io/api/utils/download';
+            var url = 'http://18.224.19.26:5000/api/utils/download';
             var ext = '.mp4';
 
             Alert.alert(title, 'Video Will be saved in ' + String(MovieDir));
@@ -107,14 +105,14 @@ const HomeScreen = ({navigation}) => {
   return (
     <>
       <Background>
-        {ask &&
-          validURL(clip) &&
+        {validURL(clip) &&
+          ask &&
           Alert.alert('URL Detected  in Clipboard ', 'Do You Want to Paste', [
             {
               text: 'Confirm',
               onPress: () => {
-                setLink(clip);
                 setAsk(false);
+                setLink({value: clip});
               },
             },
             {
@@ -128,7 +126,7 @@ const HomeScreen = ({navigation}) => {
         <Logo />
         <Paragraph>Have The Video URL/Video Id ?</Paragraph>
         <TextInput
-          label="Enter URL Here"
+          label="Paste URL Here"
           theme={{colors: {primary: 'red'}}}
           returnKeyType="done"
           value={link.value}

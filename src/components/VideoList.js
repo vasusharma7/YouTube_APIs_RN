@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import VideoListItem from './VideoListItem';
-export default function VideoList({videos, openPlayer}) {
+export default function VideoList({loading, videos, openPlayer}) {
   const VideoItems = videos.map(video => (
     <VideoListItem openPlayer={openPlayer} key={video.etag} video={video} />
   ));
@@ -16,6 +16,11 @@ export default function VideoList({videos, openPlayer}) {
           </View>
         ) : (
           <Text style={styles.TextStyle}>Search Results</Text>
+        )}
+        {loading && (
+          <View style={styles.emptyStyles}>
+            <Text style={styles.TextStyleEmpty}>Loading.......</Text>
+          </View>
         )}
         {VideoItems}
       </View>

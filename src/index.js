@@ -31,7 +31,7 @@ const TabScreen = createMaterialTopTabNavigator(
     animationEnabled: true,
     tabBarOptions: {
       activeTintColor: '#FFFFFF',
-      inactiveTintColor: '#fff',
+      inactiveTintColor: '#f00',
       style: {
         backgroundColor: '#000',
       },
