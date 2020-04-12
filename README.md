@@ -11,7 +11,7 @@ cd youtube_mp3_downloader
 npm install
 
 ```
-## To run on android device
+## Before running the app on android device
 
 ``` react-native
 1. Connect your deivce to the PC.
