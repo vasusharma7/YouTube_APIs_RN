@@ -12,7 +12,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import YTSearch from 'youtube-api-search';
 import axios from 'axios';
 // import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-const API_KEY = 'AIzaSyBmxU0P0h6uQTANkaBKbmRdHjZZe4iRfXA';
+const API_KEY = <YOUR API KEY>;
 
 const HomeScreen = ({navigation}) => {
   const [clip, setClip] = useState('');
