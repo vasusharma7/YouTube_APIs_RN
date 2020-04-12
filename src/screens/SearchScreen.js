@@ -21,7 +21,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Button from '../components/Button.js';
 import SearchBar from '../components/SearchBar.js';
 import VideoList from '../components/VideoList.js';
-const API_KEY = 'AIzaSyBmxU0P0h6uQTANkaBKbmRdHjZZe4iRfXA';
+const API_KEY = <YOUR API KEY>;
 import axios from 'axios';
 export default class SearchScreen extends React.Component {
   state = {
