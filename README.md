@@ -1,8 +1,8 @@
 # YouTube APIs
 
-This is a **react-native** app for downloading YouTube videos to your device storage. You can also search for videos and play within the app. This app is uses **YouTube APIs**.The app is built without expo, purely in react-native development environment.It uses Node-JS package **ytdl-core**[https://github.com/fent/node-ytdl-core] for downloading videos.
+This is a **react-native** app for downloading YouTube videos to your device storage. You can also search for videos and play within the app. This app is uses **YouTube APIs**.The app is built without expo, purely in react-native development environment.It uses Node-JS package [**ytdl-core**](https://github.com/fent/node-ytdl-core) for downloading videos.
 
-**This app is built just for learning purposes only as a starter project in React Native.**
+
 ## Installation
 
 
@@ -30,3 +30,5 @@ react-native run-android
 
 ## Contributing
 Pull requests are welcome.
+
+## This app is built just for learning purposes only as a starter project in React Native. No Illegal Activity Intended.
